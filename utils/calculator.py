@@ -138,17 +138,18 @@ def get_speciality():
     selected_keys = [int(key.replace('subject_', '')) for key, selected in buttons_state.items() if selected]
     if selected_keys:
         grouped = {}
-        specialities = []
+        match_specialities = []
         for key in data:
             if set(key).issubset(set(selected_keys)):
-                specialities.append(data[key])
-        for group in specialities:
-            for institute, specialties in group:
+                match_specialities.append(data[key])
+        for group in match_specialities:
+            for institute, specialities in group:
                 if institute not in grouped:
                     grouped[institute] = []
-                grouped[institute].extend(specialties)
+                grouped[institute].extend(specialities)
         result = []
-        for institute, specialties in sorted(grouped.items()):
-            result.append(f"{institute}:\n" + "\n".join(f"  - {spec}" for spec in sorted(specialties)))
+        for institute, specialities in sorted(grouped.items()):
+            result.append(f"{institute}:\n"
+                          f"{"\n".join(f"  - {spec}" for spec in sorted(specialities))}")
         return "\n\n".join(result)
     return
