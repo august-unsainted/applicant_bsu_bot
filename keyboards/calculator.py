@@ -1,8 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from utils.calculator import buttons_state, subjects
+from utils.calculator import subjects
 
 
-def generate_keyboard():
+def generate_keyboard(buttons_state):
     keyboard = []
     arr = []
     for key, selected in buttons_state.items():
