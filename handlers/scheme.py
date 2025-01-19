@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import CallbackQuery
 
 from keyboards.scheme import scheme_kb, scheme_back_kb
 

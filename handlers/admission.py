@@ -1,6 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import CommandStart
+from aiogram.types import CallbackQuery
 
 from keyboards.admission import admission_kb, admission_back_kb
 
