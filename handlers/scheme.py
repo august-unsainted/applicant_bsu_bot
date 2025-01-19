@@ -6,7 +6,7 @@ from keyboards.scheme import scheme_kb, scheme_back_kb
 router = Router()
 
 
-@router.callback_query(F.data == 'about_scheme')
+@router.callback_query(F.data == 'scheme')
 async def about_scheme(callback: CallbackQuery):
     await callback.message.edit_text('Выберите схему поступления в БГУ', reply_markup=scheme_kb)
 

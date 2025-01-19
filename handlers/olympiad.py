@@ -6,7 +6,7 @@ from keyboards.olympiad import olympiad_kb, olympiad_back_kb
 router = Router()
 
 
-@router.callback_query(F.data == 'about_olympiad')
+@router.callback_query(F.data == 'olympiad')
 async def about_olympiad(callback: CallbackQuery):
     message_text = (
         '<b>Бесплатная олимпиада школьников «Байкальская перспектива» (7–11 классы)</b>\n\n'

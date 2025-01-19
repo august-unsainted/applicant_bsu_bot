@@ -7,7 +7,7 @@ olympiad_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Контакты оргкомитета', callback_data='olympiad_contacts')],
     [InlineKeyboardButton(text='Документы', callback_data='olympiad_documents')],
     [InlineKeyboardButton(text='Соорганизаторы', callback_data='olympiad_organizers')],
-    [InlineKeyboardButton(text='Назад', callback_data='admission_start')]])
+    [InlineKeyboardButton(text='Назад ⬅️', callback_data='admission')]])
 
 olympiad_back_kb = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='Назад', callback_data='about_olympiad')]])
+    [InlineKeyboardButton(text='Назад ⬅️', callback_data='olympiad')]])
