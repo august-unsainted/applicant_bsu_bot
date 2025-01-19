@@ -7,48 +7,24 @@ from keyboards.admission import admission_kb, admission_back_kb
 router = Router()
 
 
-@router.message(CommandStart())
-async def cmd_start(message: Message):
+@router.callback_query(F.data == 'admission')
+async def admission(callback: CallbackQuery):
     message_text = (
-        '<b>Приемная кампания в БГУ</b> (2024 г.)\n'
-        '1340 бюджетных мест\n\n'
-        '<b>Телеграм-бот для вопросов:</b>\n'
-        '— @priem_bsu_bot\n\n'
-        '— <a href="https://vk.com/priem_bsu">Приемная комиссия БГУ в ВК</a>\n\n'
-        '— <a href="https://www.bsu.ru/pk/">Больше информации на официальном сайте</a>.'
+        '<b>Приемная кампания в БГУ</b> на 2024 год: 1340 бюджетных мест\n\n'
+        ' ・ ПРИЕМ ДОКУМЕНТОВ на все формы обучения с 20 июня 2024 г.\n\n'
+        '— <a href="https://www.bsu.ru/pk/">Подробнее о приёмной компании</a>\n'
+        '— <a href="https://vk.com/priem_bsu">Приемная комиссия БГУ в ВК</a>\n'
+        '— <a href="https://t.me/priem_bsu_bot">Телеграм-бот для вопросов</a>'
     )
+    await callback.message.edit_text(message_text, parse_mode='HTML', reply_markup=admission_kb,
+                                     disable_web_page_preview=True)
 
-    await message.answer(message_text, parse_mode='HTML', reply_markup=admission_kb)
 
-
-@router.callback_query(F.data.startswith('admission'))
+@router.callback_query(F.data.in_({'contacts', 'forms'}))
 async def get_info(callback: CallbackQuery):
     message_texts = {
-        'start': (
-            '<b>Приемная кампания в БГУ</b> (2024 г.)\n'
-            '1340 бюджетных мест\n\n'
-            '<b>Телеграм-бот для вопросов:</b>\n'
-            '— @priem_bsu_bot\n\n'
-            '— <a href="https://vk.com/priem_bsu">Приемная комиссия БГУ в ВК</a>\n\n'
-            '— <a href="https://www.bsu.ru/pk/">Больше информации на официальном сайте</a>.'
-        ),
-        'forms_and_requirements': (
-            'Формы обучения и требования:\n\n'
-            'Колледж (2-4 года): аттестат (9/11 классов).\n'
-            '・  <a href="https://www.bsu.ru/abit/camp2024/spo2024/">Читать подробнее</a>\n\n'
-            'Бакалавриат (4 года): баллы ЕГЭ или диплом СПО и внутренние экзамены.\n'
-            '・ <a href="https://www.bsu.ru/abit/camp2024/spo2024/">Читать подробнее</a>\n\n'
-            'Специалитет (5-6 лет): баллы ЕГЭ или диплом СПО и внутренние экзамены.\n'
-            '・ <a href="https://www.bsu.ru/abit/camp2024/spo2024/">Читать подробнее</a>\n\n'
-            'Магистратура (2 года): диплом о высшем образовании и внутренний экзамен.\n'
-            '・ <a href="https://www.bsu.ru/abit/camp2024/spo2024/">Читать подробнее</a>\n\n'
-            'Аспирантура (3-4 года): диплом специалиста/магистра и внутренний экзамен.\n'
-            '・ <a href="https://www.bsu.ru/abit/camp2024/spo2024/">Читать подробнее</a>\n\n'
-            'Ординатура (2 года): медицинский диплом и федеральное тестирование.\n'
-            '・ <a href="https://www.bsu.ru/abit/camp2024/spo2024/">Читать подробнее</a>'
-        ),
-        'documents': (
-            '<b>Приём документов БГУ:</b>\n\n'
+        'contacts': (
+            '<b>Расписание приёма документов в БГУ и контакты:</b>\n\n'
             '<b>Начало приема на все формы:</b>\n'
             '— с 20 июня 2024 года\n\n'
             '<b>Расписание:</b>\n'
@@ -62,38 +38,24 @@ async def get_info(callback: CallbackQuery):
             '<b>E-mail:</b>\n'
             '— udp@bsu.ru'
         ),
-        'exams': (
-            '<b>Образовательная акция «Пробный ЕГЭ»</b>\n\n'
-            'Уважаемые старшеклассники! Приглашаем вас проверить свои знания на пробных ЕГЭ. '
-            '<a href="https://www.bsu.ru/reg/?reg_form=1">Зарегистрироваться</a>\n\n'
-            '<b>Актуальная информация ЕГЭ 2024:</b>\n'
-            '— https://vk.com/priem_bsu\n\n'
-            '<b>Стоимость:</b>\n'
-            '— 200 рублей за один предмет\n\n'
-            '<b>Расписание на 2023 г:</b>\n'
-            '— 20 января в 14:00: Химия, информатика и ИКТ\n'
-            '— 28 января в 10:00: Математика (профильный уровень)\n'
-            '— 3 февраля в 14:00: Биология, физика\n'
-            '— 10 февраля в 14:00: Обществознание\n\n'
-            '<b>Результаты:</b>\n'
-            '— Через 10 дней на информационном стенде в каб. 0105\n\n'
-            '<b>Место проведения:</b>\n'
-            '— г. Улан-Удэ, ул. Смолина, 24а\n'
-            '<b>Контактный телефон:</b>\n'
-            '— +7 (3012) 22-77-22'
+        'forms': (
+            '<b>Формы обучения и требования:</b>\n\n'
+            '<b>Колледж (2-4 года):</b> аттестат (9/11 классов).\n'
+            '・ <a href="https://www.bsu.ru/abit/camp2024/spo2024/">Читать подробнее</a>\n\n'
+            '<b>Бакалавриат (4 года):</b> баллы ЕГЭ или диплом СПО и внутренние экзамены.\n'
+            '・ <a href="https://www.bsu.ru/abit/camp2024/bak2024/">Читать подробнее</a>\n\n'
+            '<b>Специалитет (5-6 лет):</b> баллы ЕГЭ или диплом СПО и внутренние экзамены.\n'
+            '・ <a href="https://www.bsu.ru/abit/camp2024/spec2024/">Читать подробнее</a>\n\n'
+            '<b>Магистратура (2 года):</b> диплом о высшем образовании и внутренний экзамен.\n'
+            '・ <a href="https://www.bsu.ru/abit/camp2024/mag2024/">Читать подробнее</a>\n\n'
+            '<b>Аспирантура (3-4 года):</b> диплом специалиста/магистра и внутренний экзамен.\n'
+            '・ <a href="https://www.bsu.ru/abit/camp2024/asp2024/">Читать подробнее</a>\n\n'
+            '<b>Ординатура (2 года):</b> медицинский диплом и федеральное тестирование.\n'
+            '・ <a href="https://www.bsu.ru/abit/camp2024/ord2024/">Читать подробнее</a>'
         ),
-        'links': (
-            'Полезные ссылки:\n\n'
-            '— <a href="https://vk.com/bsu03">Официальная группа БГУ в ВК</a>\n\n'
-            '— <a href="https://abiturient.bsu.ru/test/">Тест профессиональной направленности</a>\n\n'
-            '— <a href="https://www.bsu.ru/abit/qa/">Часто задаваемые вопросы</a>\n\n'
-            '— <a href="https://www.bsu.ru/abit/help/profession/">Словарь профессий</a>'
-        )
     }
 
-    info_type = callback.data.replace('admission_', '')
-    markup = admission_kb if info_type == 'start' else admission_back_kb
-    await callback.message.edit_text(message_texts[info_type], parse_mode='HTML', reply_markup=markup)
+    await callback.message.edit_text(message_texts[callback.data], parse_mode='HTML', reply_markup=admission_back_kb)
 
 
 

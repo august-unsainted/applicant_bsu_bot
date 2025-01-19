@@ -13,11 +13,16 @@ def generate_keyboard(buttons_state):
             keyboard.append([arr[i], arr[i + 1]])
         else:
             keyboard.append([arr[i]])
-    keyboard.append([InlineKeyboardButton(text='Далее', callback_data='subject_next')])
-    keyboard.append([InlineKeyboardButton(text='Назад', callback_data='admission_start')])
+    keyboard.append([InlineKeyboardButton(text='Далее ➡️', callback_data='subject_next')])
+    keyboard.append([InlineKeyboardButton(text='Назад ⬅️', callback_data='admission')])
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
+calculator_tip_kb = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='Шпаргалка', callback_data='tip')],
+    [InlineKeyboardButton(text='Назад ⬅️', callback_data='calculator')]
+])
+
 calculator_back_kb = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='Назад', callback_data='calculator')]
+    [InlineKeyboardButton(text='Назад ⬅️', callback_data='calculator')]
 ])
