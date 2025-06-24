@@ -147,7 +147,7 @@ async def get_stats() -> list[str]:
         if not table.startswith('stats'):
             continue
         month_number, year = table.replace('stats_', '').split('_')
-        month = months_dict.get(month_number)
+        month = months_dict.get(int(month_number))
         header = f'{month}, {year}'
         record_stat = template.format(*await get_stat(table, temp))
         months.append(f'<b>{header}\n</b>\n{record_stat}')
