@@ -127,11 +127,11 @@ async def get_stat(table: str = '', temp: dict[str, int] = None) -> tuple[int, A
     table = await get_stat_dict(table)
     result, total, users = [], 0, []
     for text, count in table.items():
-        count -= temp.get(text) or 0
         if not text.endswith('users'):
             result.append(f'— «{text}»: {count}')
             total += count
         else:
+            count -= temp.get(text) or 0
             users.append(count)
     return sum(users), *users, total, '\n'.join(result)
 
