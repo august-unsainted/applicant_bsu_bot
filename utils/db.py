@@ -1,12 +1,7 @@
 import sqlite3 as sq
-from pathlib import Path
-
 import pytz
-import locale
 from typing import Any
 from datetime import datetime
-
-from aiogram.types import FSInputFile, InputMediaDocument
 
 from utils.data import stats, keyboards_text, messages
 from utils.filesystem import find_resource_path
@@ -14,7 +9,21 @@ from utils.filesystem import find_resource_path
 db = sq.connect(find_resource_path('data/applicant.db'))
 cur = db.cursor()
 
-locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+months_dict = {
+    1: 'Январь',
+    2: 'Февраль',
+    3: 'Март',
+    4: 'Апрель',
+    5: 'Май',
+    6: 'Июнь',
+    7: 'Июль',
+    8: 'Август',
+    9: 'Сентябрь',
+    10: 'Октябрь',
+    11: 'Ноябрь',
+    12: 'Декабрь',
+}
+
 tz = pytz.timezone('Asia/Irkutsk')
 
 
@@ -138,7 +147,7 @@ async def get_stats() -> list[str]:
         if not table.startswith('stats'):
             continue
         month_number, year = table.replace('stats_', '').split('_')
-        month = datetime.strptime(month_number.rjust(2, '0'), '%m').strftime('%B')
+        month = months_dict.get(month_number)
         header = f'{month}, {year}'
         record_stat = template.format(*await get_stat(table, temp))
         months.append(f'<b>{header}\n</b>\n{record_stat}')
