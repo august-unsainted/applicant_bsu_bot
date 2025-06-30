@@ -3,7 +3,7 @@ from aiogram.exceptions import TelegramRetryAfter, TelegramAPIError, AiogramErro
 from aiogram import Bot
 from aiogram.types import User
 
-from utils.data import messages, keyboards
+from utils.data import messages_text, keyboards
 from utils.db import get_active_users, update_activity, count_users
 
 
@@ -43,7 +43,7 @@ async def send_broadcast(bot: Bot, sender: User, admin_params: dict, broadcast_p
         count = sum(1 for success in results if success)
         await count_users()
     finally:
-        text = messages.get('broadcast_end').format(broadcast_params['text'], count, sender.first_name, sender.username)
+        text = messages_text.get('broadcast_end').format(broadcast_params['text'], count, sender.first_name, sender.username)
         try:
             if broadcast_params['media']:
                 await bot.edit_message_caption(caption=text, parse_mode='HTML', **admin_params)

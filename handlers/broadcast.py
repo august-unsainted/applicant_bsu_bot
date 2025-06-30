@@ -1,11 +1,12 @@
 from aiogram import Router, F, Bot
-from aiogram.types import Message, CallbackQuery, InputMediaPhoto
+from aiogram.types import Message, CallbackQuery, InputMediaPhoto, InlineKeyboardMarkup
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
 from config import ADMIN
-from utils.data import keyboards, messages
+from handlers.start import handle_text_edit
+from utils.data import keyboards, messages_text
 from utils.db import count_users
 from utils.send_broadcast import send_broadcast
 
@@ -20,29 +21,35 @@ class Broadcast(StatesGroup):
     media = State()
 
 
+async def get_args(message: Message, state: FSMContext, kb: InlineKeyboardMarkup) -> dict[str, str]:
+    data = await state.get_data()
+    return {'chat_id':      message.chat.id, 'message_id': data['message_id'], 'parse_mode': 'HTML',
+            'reply_markup': kb}
+
+
 async def handle_broadcast(context: Message | CallbackQuery, state: FSMContext) -> None:
     await state.clear()
-    args = {'text': messages.get("broadcast").format((await count_users()).get('active')), 'reply_markup': cancel_kb}
-    response = await context.answer(**args) if isinstance(context, Message) else await context.message.edit_text(**args)
+    args = {'text':         messages_text.get("broadcast").format((await count_users()).get('active')),
+            'reply_markup': cancel_kb}
+    response = await context.answer(**args) if isinstance(context, Message) \
+        else await handle_text_edit(context.message, args)
     await state.update_data(message_id=response.message_id)
     await state.set_state(Broadcast.text)
 
 
 async def get_media(message: Message, state: FSMContext, bot: Bot) -> None:
-    data = await state.get_data()
-    await bot.edit_message_text(chat_id=message.chat.id, message_id=data['message_id'], parse_mode='HTML',
-                                reply_markup=edit_kb, text=messages.get('broadcast_text').format(message.text))
+    await bot.edit_message_text(messages_text.get('broadcast_text').format(message.text),
+                                **await get_args(message, state, edit_kb))
     await state.set_state(Broadcast.media)
 
 
 async def get_result(state: FSMContext) -> str:
     data = await state.get_data()
-    return messages.get('broadcast_result').format(data['text'], (await count_users()).get('active'))
+    return messages_text.get('broadcast_result').format(data['text'], (await count_users()).get('active'))
 
 
 @router.message(Command('mail'), F.chat.id == ADMIN)
 async def cmd_mail(message: Message, state: FSMContext):
-    await message.delete()
     await handle_broadcast(message, state)
 
 
@@ -67,14 +74,12 @@ async def get_broadcast_text(message: Message, state: FSMContext, bot: Bot):
 @router.message(Broadcast.media)
 async def get_broadcast_media(message: Message, state: FSMContext, bot: Bot):
     await message.delete()
-    data = await state.get_data()
-    message_id = data['message_id']
     if not message.photo:
         return await get_media(message, state, bot)
     media = message.photo[0].file_id
     await state.update_data(media=media)
-    await bot.edit_message_media(chat_id=message.chat.id, message_id=message_id, reply_markup=confirm_kb,
-                                 media=InputMediaPhoto(media=media, parse_mode='HTML', caption=await get_result(state)))
+    await bot.edit_message_media(media=InputMediaPhoto(media=media, parse_mode='HTML', caption=await get_result(state)),
+                                 **await get_args(message, state, confirm_kb))
 
 
 @router.callback_query(F.data == 'skip_pictures')
