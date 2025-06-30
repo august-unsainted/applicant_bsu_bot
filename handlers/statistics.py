@@ -1,4 +1,5 @@
 from aiogram import Router, F
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
@@ -33,7 +34,10 @@ async def db_cmd(message: Message):
 
 @router.callback_query(F.data == 'stat')
 async def stat(callback: CallbackQuery, state: FSMContext):
-    await callback.message.edit_text(**await receive_stat(state))
+    try:
+        await callback.message.edit_text(**await receive_stat(state))
+    except TelegramBadRequest:
+        await callback.answer('Вы на первой странице 🏠')
 
 
 @router.callback_query(F.data.startswith('stat'))

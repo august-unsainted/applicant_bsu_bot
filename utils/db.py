@@ -3,7 +3,7 @@ import pytz
 from typing import Any
 from datetime import datetime
 
-from utils.data import stats, keyboards_text, messages
+from utils.data import stats, keyboards_text, messages_text
 from utils.filesystem import find_resource_path
 
 db = sq.connect(find_resource_path('data/applicant.db'))
@@ -137,8 +137,8 @@ async def get_stat(table: str = '', temp: dict[str, int] = None) -> tuple[int, A
 
 
 async def get_stats() -> list[str]:
-    template = messages.get('stat')
-    main_text = messages.get('all_stat').format(*await get_stat())
+    template = messages_text.get('stat')
+    main_text = messages_text.get('all_stat').format(*await get_stat())
     months = []
     temp = {}
     tables = await execute_query('SELECT name FROM sqlite_master WHERE type="table"')
