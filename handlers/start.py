@@ -48,5 +48,5 @@ async def start(callback: CallbackQuery):
 
 @router.message(F.chat.id != ADMIN)
 async def any_message(message: Message):
-    await message.answer('К сожалению, я не понимаю, что вы хотите сказать 😢')
+    await message.answer('К сожалению, я не понимаю, что вы хотите сказать 😢\nЕсли вы хотите задать дополнительные вопросы, свяжитесь с поддержкой: @priem_bsu_bot')
     await message.delete()
