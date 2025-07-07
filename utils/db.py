@@ -97,7 +97,7 @@ async def get_active_users() -> list[int]:
 
 
 async def update_activity(user_id: int | str, activity: bool = False) -> None:
-    await execute_query('UPDATE users SET is_active = ? WHERE user_id = ?;', activity, str(user_id))
+    await execute_query('UPDATE users SET is_active = ? WHERE user_id = ?;', int(activity), str(user_id))
 
 
 async def increase_stat_count(button: str) -> None:
